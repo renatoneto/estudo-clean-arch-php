@@ -2,3 +2,4 @@ vendor/
 /.env
 storage/logs/*.log
 .docker/dbdata/
+.idea/*
