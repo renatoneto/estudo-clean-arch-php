@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  app-arch:
+    build: .
+    container_name: app-arch
+    entrypoint: dockerize -template ./.docker/app/.env:.env -wait tcp://db-arch:3306 -timeout 40s php-fpm
+    environment:
+      - DB_HOST=db-arch
+      - DB_DATABASE=laravel
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    volumes:
+      - .:/var/www
+    networks:
+      - app-arch-network
+    depends_on:
+      - db-arch
+      - redis
+
+  nginx-arch:
+    build: .docker/nginx
+    container_name: nginx
+    restart: always
+    tty: true
+    entrypoint: dockerize -template ./.docker/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf nginx -g "daemon off";
+    environment:
+      - PHP_FPM_HOST=app-arch
+      - PHP_FPM_PORT=9000
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www
+    networks:
+      - app-arch-network
+    depends_on:
+      - app-arch
+
+  redis:
+    image: redis:alpine
+    expose:
+      - 6379
+    networks:
+      - app-arch-network
+
+  db-arch:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: db-arch
+    restart: always
+    tty: true
+    ports:
+      - "3306:3306"
+    networks:
+      - app-arch-network
+    volumes:
+      - ./.docker/dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=laravel
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+
+networks:
+  app-arch-network:
+    driver: bridge
