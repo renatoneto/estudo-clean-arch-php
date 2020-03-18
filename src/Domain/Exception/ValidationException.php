@@ -2,9 +2,10 @@
 
 namespace Skp\Domain\Exception;
 
+use Exception;
 use Skp\Domain\Validation\ValidationInterface;
 
-class ValidationException extends \Exception
+class ValidationException extends Exception
 {
 
     /**

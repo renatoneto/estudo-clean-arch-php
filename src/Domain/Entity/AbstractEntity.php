@@ -8,17 +8,26 @@ use Skp\Domain\Validation\ValidationInterface;
 abstract class AbstractEntity
 {
 
+    protected ValidationInterface $validator;
+
+    /**
+     * @param ValidationInterface $validator
+     */
+    public function setValidator(ValidationInterface $validator)
+    {
+        $this->validator = $validator;
+    }
+
     /**
      * Validate and call set entity data
      *
      * @param array $data
-     * @param ValidationInterface $validator
      * @throws ValidationException
      */
-    public function setData(array $data, ValidationInterface $validator)
+    public function setData(array $data)
     {
-        if (!$validator->isValid($data)) {
-            ValidationException::exception($validator);
+        if ($this->validator && !$this->validator->isValid($data)) {
+            ValidationException::exception($this->validator);
         }
 
         $this->setValuesFromArray($data);

@@ -3,6 +3,7 @@
 namespace Skp\Domain\Entity;
 
 use DateTime;
+use Exception;
 
 class User extends AbstractEntity
 {
@@ -43,7 +44,7 @@ class User extends AbstractEntity
 
     /**
      * @return DateTime
-     * @throws \Exception
+     * @throws Exception
      */
     public function getCreatedAt(): DateTime
     {
@@ -52,7 +53,7 @@ class User extends AbstractEntity
 
     /**
      * @return DateTime
-     * @throws \Exception
+     * @throws Exception
      */
     public function getUpdatedAt(): DateTime
     {

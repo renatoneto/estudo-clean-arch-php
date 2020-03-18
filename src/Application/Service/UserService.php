@@ -4,6 +4,7 @@ namespace Skp\Application\Service;
 
 use Skp\Application\Repository\UserRepositoryInterface;
 use Skp\Domain\Entity\User;
+use Skp\Domain\Exception\EntityNotFound;
 use Skp\Domain\Exception\ValidationException;
 use Skp\Domain\Validation\UserValidationInterface;
 
@@ -30,7 +31,8 @@ class UserService
     public function createUser(array $data, UserValidationInterface $validation)
     {
         $user = new User();
-        $user->setData($data, $validation);
+        $user->setValidator($validation);
+        $user->setData($data);
 
         $this->userRepository->createUser($user);
 
@@ -40,15 +42,11 @@ class UserService
     /**
      * @param $id
      * @return User
-     * @throws \Exception
+     * @throws EntityNotFound
      */
     public function getUser($id): User
     {
-        if (!$user = $this->userRepository->getUser($id)) {
-            throw new \Exception('User not found');
-        }
-
-        return $user;
+        return $this->userRepository->getUser($id);
     }
 
 }

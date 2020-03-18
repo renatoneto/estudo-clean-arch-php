@@ -3,17 +3,16 @@
 
 namespace App\Validation;
 
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Validator as LaravelValidator;
+use Illuminate\Contracts\Validation\Validator;
 use Skp\Domain\Validation\UserValidationInterface;
 
 class UserValidation implements UserValidationInterface
 {
 
     /**
-     * @var LaravelValidator
+     * @var Validator
      */
-    private LaravelValidator $validator;
+    private Validator $validator;
 
     public function __construct()
     {
@@ -25,8 +24,6 @@ class UserValidation implements UserValidationInterface
 
     public function isValid(array $data): bool
     {
-
-
         return $this->validator->setData($data)->passes();
     }
 

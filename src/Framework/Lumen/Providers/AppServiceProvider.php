@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Model\User;
+use App\Repositories\UserRepositoryEloquent;
 use App\Validation\UserValidation;
 use Illuminate\Support\ServiceProvider;
 use Skp\Application\Repository\UserRepositoryInterface;
@@ -17,7 +17,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // validation
         $this->app->bind(UserValidationInterface::class, UserValidation::class);
-        $this->app->bind(UserRepositoryInterface::class, User::class);
+
+        // repositories
+        $this->app->bind(UserRepositoryInterface::class, UserRepositoryEloquent::class);
     }
+
 }

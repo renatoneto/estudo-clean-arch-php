@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use Skp\Application\Service\UserService;
+use Skp\Domain\Exception\EntityNotFound;
 use Skp\Domain\Exception\ValidationException;
 use Skp\Domain\Validation\UserValidationInterface;
 
@@ -46,13 +47,12 @@ class UsersController extends Controller
         try {
 
             $user = $this->userService->getUser($id);
-
             return response()->json((new UserTransformer())->transform($user));
 
-        } catch (\Exception $e) {
+        } catch (EntityNotFound $e) {
             return response()->json([
-                'message' => $e->getMessage()
-            ]);
+                'message' => 'User not found'
+            ], 404);
         }
     }
 }
